@@ -1,7 +1,7 @@
 // BESファイルのUnicode変換試作
 
 let list = []
-list['a0'] = '　'
+list['a0'] = '⠀'
 list['fe'] = '@LB@'
 list['0d'] = ''
 list['0c'] = '@LB@'
