@@ -1,7 +1,5 @@
 # bes-viewer
 
-> BES Viewer
-
 ## Build Setup
 
 ``` bash
