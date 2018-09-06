@@ -40,7 +40,7 @@
       <div class="content has-text-centered">
         <p>
           <strong>BES Viewer α</strong> by <a href="https://twitter.com/shunito">Shunsuke Ito</a>.
-          The <a href="https://github.com/shunito">source code</a> is licensed <a href="http://opensource.org/licenses/mit-license.php">MIT</a>.
+          The <a href="https://github.com/shunito/bes-viewer">source code</a> is licensed <a href="http://opensource.org/licenses/mit-license.php">MIT</a>.
         </p>
       </div>
     </footer>
