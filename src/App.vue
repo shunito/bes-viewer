@@ -49,7 +49,6 @@
 </template>
 
 <script>
-import Hello from './components/Hello'
 import Braille from './components/Braille'
 
 import bes2unicode from './module/bes2unicode'
@@ -109,7 +108,6 @@ export default {
     }
   },
   components: {
-    Hello,
     Braille
   }
 }
