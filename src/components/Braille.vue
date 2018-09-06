@@ -1,9 +1,17 @@
 <template>
   <p v-if="isFileClose">ファイルを選択してください</p>
   <div v-else class="besbody">
-    <section v-for="(page,pno) in bes" v-bind:key="pno" class="page">
+    <nav v-if="bes.title" aria-label="目次">
+      <ul>
+        <li v-for="(title,pno) in bes.title" v-bind:key="pno"><a :href="'#page'+pno">{{title}}</a></li>
+      </ul>
+    </nav>
+    <section v-for="(page,pno) in bes.body" v-bind:key="pno" class="page" :id="'page'+pno">
       <template v-for="(line,lno) in page">
         <hr v-if="line === '@HR@'" v-bind:key="lno">
+        <h1 v-else-if="line.substr(0,4) ==='@H1@'">{{line.slice(5)}}</h1>
+        <h2 v-else-if="line.substr(0,4) ==='@H2@'">{{line.slice(5)}}</h2>
+        <p v-else-if="line.length === 0"><br /></p>
         <p v-else v-bind:key="lno">{{line}}</p>
       </template>
     </section>
@@ -12,15 +20,53 @@
 
 <script>
 
+function isHeader (line) {
+  if (line.split('⠒').length > 5) {
+    return false
+  }
+
+  if (line.length < 5) {
+    return false
+  }
+  return true
+}
+
 function splitbraille (str) {
   let pages = str.split('@PB@')
-  let result = []
+  let bodys = []
+  let titles = []
+  let docTitle = false
 
   pages.forEach(page => {
-    result.push(page.split('@LB@'))
+    const lines = page.split('@LB@')
+    let headding = false
+    let p = []
+    let trimLine = ''
+
+    lines.forEach(line => {
+      trimLine = line.replace(/^⠀+|⠀+$/g, '')
+      if (headding === false) {
+        if (isHeader(trimLine)) {
+          titles.push(trimLine)
+          if (docTitle === false) {
+            docTitle = trimLine
+            line = '@H1@' + line
+          } else {
+            line = '@H2@' + line
+          }
+          headding = true
+        }
+      }
+      p.push(line)
+    })
+    bodys.push(p)
   })
 
-  return result
+  return {
+    docTitle: docTitle,
+    title: titles,
+    body: bodys
+  }
 }
 
 export default {
