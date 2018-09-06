@@ -1,7 +1,7 @@
 <template>
   <p v-if="isFileClose">ファイルを選択してください</p>
   <div v-else class="besbody">
-    <nav v-if="bes.title" aria-label="目次">
+    <nav v-if="bes.title" aria-label="目次" class="content">
       <ul>
         <li v-for="(title,pno) in bes.title" v-bind:key="pno"><a :href="'#page'+pno">{{title}}</a></li>
       </ul>
