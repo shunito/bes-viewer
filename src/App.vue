@@ -4,14 +4,9 @@
       <nav class="navbar is-dark">
         <div class="navbar-brand">
           <h1 class="navbar-item">BES Viewer α</h1>
-          <div class="navbar-burger burger" data-target="navbarMenu" @click="toggleMenu" :class="{'is-active': isNavOpen}">
-            <span></span>
-            <span></span>
-            <span></span>
-          </div>
         </div>
 
-        <div id="navbarMenu" class="navbar-menu" :class="{'is-active': isNavOpen}">
+        <div id="navbarMenu" class="navbar-menu is-active">
           <div class="navbar-start">
             <div class="navbar-item">
               <label>ファイル <input type="file" id="file" name="file" accept=".bes" @change="onFileChange" /></label>
@@ -22,16 +17,14 @@
           </div>
 
           <div class="navbar-end">
-            <a class="navbar-item" href="https://twitter.com/shunito">
-              shunsuke ito
-            </a>
+            <p class="navbar-item">⠰⠠⠃⠠⠑⠠⠎⠀⠤⠢⠥⠃⠙⠀⠘⠭⠒⠁⠒</p>
           </div>
         </div>
       </nav>
     </header>
 
     <div class="container is-fluid">
-        <main aria-live="polite">
+        <main aria-live="polite" class="section">
           <Braille v-bind:braille="bes"></Braille>
         </main>
     </div>
@@ -114,8 +107,4 @@ export default {
 </script>
 
 <style>
-main {
-  padding:2em;
-  font-size: 20pt;
-}
 </style>

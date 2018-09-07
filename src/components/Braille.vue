@@ -1,20 +1,22 @@
 <template>
-  <p v-if="isFileClose">ファイルを選択してください</p>
-  <div v-else class="besbody">
-    <nav v-if="bes.title" aria-label="目次" class="content">
-      <ul>
+  <p v-if="isFileClose" class="is-size-2 is-size-4-mobile">⠢⠥⠃⠙⠊⠀⠻⠴⠕⠩⠳⠟⠀⠩⠐⠕⠱⠃<br/>ファイルを選択してください</p>
+  <div v-else class="besbody is-size-3 is-size-5-mobile" aria-role="document">
+    <nav v-if="bes.title" aria-label="目次" class="toc">
+      <ol>
         <li v-for="(title,pno) in bes.title" v-bind:key="pno"><a :href="'#page'+pno">{{title}}</a></li>
-      </ul>
+      </ol>
     </nav>
-    <section v-for="(page,pno) in bes.body" v-bind:key="pno" class="page" :id="'page'+pno">
-      <template v-for="(line,lno) in page">
-        <hr v-if="line === '@HR@'" v-bind:key="lno">
-        <h1 v-else-if="line.substr(0,4) ==='@H1@'" v-bind:key="lno">{{line.slice(5)}}</h1>
-        <h2 v-else-if="line.substr(0,4) ==='@H2@'" v-bind:key="lno">{{line.slice(5)}}</h2>
-        <p v-else-if="line.length === 0" v-bind:key="lno"><br /></p>
-        <p v-else v-bind:key="lno">{{line}}</p>
-      </template>
-    </section>
+    <article>
+      <section v-for="(page,pno) in bes.body" v-bind:key="pno" class="page" :id="'page'+pno">
+        <template v-for="(line,lno) in page">
+          <hr v-if="line === '@HR@'" v-bind:key="lno">
+          <h1 v-else-if="line.substr(0,4) ==='@H1@'" v-bind:key="lno">{{line.slice(5)}}</h1>
+          <h2 v-else-if="line.substr(0,4) ==='@H2@'" v-bind:key="lno">{{line.slice(5)}}</h2>
+          <p v-else-if="line.length === 0" v-bind:key="lno"><br /></p>
+          <p v-else v-bind:key="lno">{{line}}</p>
+        </template>
+      </section>
+    <article>
   </div>
 </template>
 
@@ -84,4 +86,12 @@ export default {
 </script>
 
 <style>
+.toc {
+  padding: 0 1rem 2rem 1rem;
+  border-bottom: 2px solid #999;
+}
+.page {
+  padding: 2rem 0 2rem 0;
+  border-bottom: 2px solid #999;
+}
 </style>
