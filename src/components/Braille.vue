@@ -9,9 +9,9 @@
     <section v-for="(page,pno) in bes.body" v-bind:key="pno" class="page" :id="'page'+pno">
       <template v-for="(line,lno) in page">
         <hr v-if="line === '@HR@'" v-bind:key="lno">
-        <h1 v-else-if="line.substr(0,4) ==='@H1@'">{{line.slice(5)}}</h1>
-        <h2 v-else-if="line.substr(0,4) ==='@H2@'">{{line.slice(5)}}</h2>
-        <p v-else-if="line.length === 0"><br /></p>
+        <h1 v-else-if="line.substr(0,4) ==='@H1@'" v-bind:key="lno">{{line.slice(5)}}</h1>
+        <h2 v-else-if="line.substr(0,4) ==='@H2@'" v-bind:key="lno">{{line.slice(5)}}</h2>
+        <p v-else-if="line.length === 0" v-bind:key="lno"><br /></p>
         <p v-else v-bind:key="lno">{{line}}</p>
       </template>
     </section>
