@@ -16,7 +16,7 @@
           <p v-else v-bind:key="lno">{{line}}</p>
         </template>
       </section>
-    <article>
+    </article>
   </div>
 </template>
 
