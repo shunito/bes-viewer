@@ -1,6 +1,6 @@
 <template>
   <p v-if="isFileClose" class="is-size-2 is-size-4-mobile">⠢⠥⠃⠙⠊⠀⠻⠴⠕⠩⠳⠟⠀⠩⠐⠕⠱⠃<br/>ファイルを選択してください</p>
-  <div v-else class="besbody is-size-3 is-size-5-mobile" aria-role="document">
+  <div v-else class="besbody is-size-3 is-size-5-mobile" role="document">
     <nav v-if="bes.title" aria-label="目次" class="toc">
       <ol>
         <li v-for="(title,pno) in bes.title" v-bind:key="pno"><a :href="'#page'+pno">{{title}}</a></li>
