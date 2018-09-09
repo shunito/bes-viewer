@@ -3,11 +3,11 @@
   <div v-else class="besbody is-size-3 is-size-5-mobile" role="document">
     <nav v-if="bes.title" aria-label="目次" class="toc">
       <ol>
-        <li v-for="(title,pno) in bes.title" v-bind:key="pno"><a :href="'#page'+pno">{{title}}</a></li>
+        <li v-for="(title,pno) in bes.title" v-bind:key="pno"><a :href="'#page'+(pno+1)">{{title}}</a></li>
       </ol>
     </nav>
     <article>
-      <section v-for="(page,pno) in bes.body" v-bind:key="pno" class="page" :id="'page'+pno">
+      <section v-for="(page,pno) in bes.body" v-bind:key="pno" class="page" :id="'page'+(pno+1)">
         <template v-for="(line,lno) in page">
           <hr v-if="line === '@HR@'" v-bind:key="lno">
           <h1 v-else-if="line.substr(0,4) ==='@H1@'" v-bind:key="lno">{{line.slice(5)}}</h1>
@@ -86,6 +86,9 @@ export default {
 </script>
 
 <style>
+.besbody {
+  font-family: "Apple Braille", "Segoe UI Symbol", Braille6, monospace; 
+}
 .toc {
   padding: 0 1rem 2rem 1rem;
   border-bottom: 2px solid #999;
