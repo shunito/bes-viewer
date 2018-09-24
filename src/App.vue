@@ -14,6 +14,11 @@
             <div class="navbar-item">
               <button class="button is-small is-light" id="closeFile" v-bind:disabled="isFileClosed" @click="onFileClose">ファイルを閉じる</button>
             </div>
+            <div class="navbar-item">
+              <b-switch size="is-small" v-model="isYomiChecked">
+                {{ isYomiChecked ? '読みを表示する' : '読みを表示しない' }}
+              </b-switch>
+            </div>
           </div>
 
           <div class="navbar-end">
@@ -25,7 +30,7 @@
 
     <div class="container is-fluid">
         <main aria-live="polite" class="section">
-          <Braille v-bind:braille="bes"></Braille>
+          <Braille v-bind:braille="bes" :checkYomi="isYomiChecked"></Braille>
         </main>
     </div>
 
@@ -53,7 +58,8 @@ export default {
       navIsActive: false,
       file: null,
       str: '',
-      openFile: false
+      openFile: false,
+      isYomiChecked: false
     }
   },
   computed: {
