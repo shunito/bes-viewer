@@ -1,7 +1,7 @@
 <template>
   <p v-if="isFileClose" class="is-size-2 is-size-4-mobile">⠢⠥⠃⠙⠊⠀⠻⠴⠕⠩⠳⠟⠀⠩⠐⠕⠱⠃<br/>ファイルを選択してください</p>
   <div v-else class="besbody is-size-3 is-size-5-mobile" role="document">
-    <nav v-if="bes.title" aria-label="目次" class="toc">
+    <nav v-if="bes.title" aria-label="目次" class="toc content">
       <ol>
         <li v-for="(title,pno) in bes.title" v-bind:key="pno">
           <a :href="'#page'+(pno+1)">{{title}}</a>
@@ -10,7 +10,8 @@
       </ol>
     </nav>
     <article>
-      <section v-for="(page,pno) in bes.body" v-bind:key="pno" class="page" :id="'page'+(pno+1)">
+      <section v-for="(page,pno) in bes.body" v-bind:key="pno" class="columns page" :id="'page'+(pno+1)">
+        <div class="column">
         <template v-for="(line,lno) in page">
           <hr v-if="line === '@HR@'" v-bind:key="lno">
           <h1 v-else-if="line.substr(0,4) ==='@H1@'" v-bind:key="lno">{{line.slice(4)}}</h1>
@@ -18,7 +19,8 @@
           <p v-else-if="line.length === 0" v-bind:key="lno"><br /></p>
           <p v-else v-bind:key="lno">{{line}}</p>
         </template>
-        <aside v-if="checkYomi" class="yomi">          
+        </div>
+        <aside v-if="checkYomi" class="column is-one-third yomi">
           <template v-for="(line,lno) in page">
             <hr v-if="line === '@HR@'" v-bind:key="lno">
             <h1 v-else-if="line.substr(0,4) ==='@H1@'" v-bind:key="lno">{{ tenji2yomi(line.slice(4)) }}</h1>
@@ -110,11 +112,11 @@ export default {
 
 <style>
 .besbody {
-  font-family: "Apple Braille", "Segoe UI Symbol", Braille6, monospace; 
+  font-family: "Apple Braille", "Segoe UI Symbol", Braille6, monospace;
 }
 .toc {
-  padding: 0 1rem 2rem 1rem;
-  border-bottom: 2px solid #999;
+  padding-bottom: 2rem;
+  border-bottom: 2px solid #CCC;
 }
 .page {
   position: relative;
@@ -122,16 +124,12 @@ export default {
   border-bottom: 2px solid #999;
 }
 .yomi {
-  position: absolute;
-  width: 20rem;
   padding: 1rem;
   font-size: 0.8rem;
   border: 1px solid #CCC;
-  right: 1rem;
-  top: 1rem;
 }
 .toc-yomi{
-  font-size: 70%;
+  font-size: 0.7rem;
   color: #333;
 }
 </style>
