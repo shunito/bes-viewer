@@ -129,7 +129,7 @@ export default {
   border: 1px solid #CCC;
 }
 .toc-yomi{
-  font-size: 0.7rem;
+  font-size: 0.8rem;
   color: #333;
 }
 </style>
