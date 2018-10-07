@@ -1,6 +1,8 @@
 <template>
   <p v-if="isFileClose" class="is-size-2 is-size-4-mobile">⠢⠥⠃⠙⠊⠀⠻⠴⠕⠩⠳⠟⠀⠩⠐⠕⠱⠃<br/>ファイルを選択してください</p>
-  <div v-else class="besbody is-size-3 is-size-5-mobile" role="document">
+  <div v-else class="besbody is-size-3 is-size-5-mobile" role="document" id="docTop">
+    <h1 v-if="bes.docTitle">{{ bes.docTitle }}</h1>
+    <p v-if="checkYomi">{{ tenji2yomi(bes.docTitle) }}</p>
     <nav v-if="bes.title" aria-label="目次" class="toc content">
       <ol>
         <li v-for="(title,pno) in bes.title" v-bind:key="pno">
@@ -19,6 +21,9 @@
           <p v-else-if="line.length === 0" v-bind:key="lno"><br /></p>
           <p v-else v-bind:key="lno">{{line}}</p>
         </template>
+        <nav class="is-size-6 has-text-right">
+          <a href="#docTop"><b-icon icon="arrow-up" size="is-small" aria-hidden="true" />⠾⠩⠐⠳⠯⠀⠾⠐⠞⠙</a>
+        </nav>
         </div>
         <aside v-if="checkYomi" class="column is-one-third yomi">
           <template v-for="(line,lno) in page">
@@ -28,6 +33,9 @@
             <p v-else-if="line.length === 0" v-bind:key="lno"><br /></p>
             <p v-else v-bind:key="lno">{{ tenji2yomi(line) }}</p>
           </template>
+          <nav class="is-size-6 has-text-right">
+            <a href="#docTop"><b-icon icon="arrow-up" size="is-small" aria-hidden="true" />もくじへ もどる</a>
+          </nav>
         </aside>
       </section>
     </article>
@@ -76,6 +84,11 @@ function splitbraille (str) {
       }
       p.push(line)
     })
+
+    // ページの見出しが見つからない場合は最初の行を見出しとする
+    if (headding === false) {
+      titles.push('⠀⠀')
+    }
     bodys.push(p)
   })
 
@@ -125,11 +138,11 @@ export default {
 }
 .yomi {
   padding: 1rem;
-  font-size: 0.8rem;
+  font-size: 1rem;
   border: 1px solid #CCC;
 }
 .toc-yomi{
-  font-size: 0.8rem;
+  font-size: 1rem;
   color: #333;
 }
 </style>
