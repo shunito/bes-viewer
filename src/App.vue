@@ -51,6 +51,10 @@ import Braille from './components/Braille'
 
 import bes2unicode from './module/bes2unicode'
 
+import axios from 'axios'
+
+axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
+
 export default {
   name: 'app',
   data: function () {
@@ -59,7 +63,8 @@ export default {
       file: null,
       str: '',
       openFile: false,
-      isYomiChecked: false
+      isYomiChecked: false,
+      url: new URL(window.location)
     }
   },
   computed: {
@@ -73,6 +78,12 @@ export default {
       return this.navIsActive
     }
   },
+  created: function () {
+    const targetUrl = this.url.searchParams.get('url')
+    if (targetUrl.length > 5 && targetUrl.slice(-4).toLowerCase() === '.bes') {
+      this.onGetBesUrl(targetUrl)
+    }
+  },
   methods: {
     toggleMenu: function () {
       this.navIsActive = !this.navIsActive
@@ -82,6 +93,7 @@ export default {
       if (!files.length) {
         return
       }
+      console.log(files[0])
 
       const reader = new FileReader()
       reader.onloadend = (theFile) => {
@@ -104,6 +116,33 @@ export default {
       this.file = null
       this.str = ''
       this.openFile = false
+    },
+    getApi: function (path, params, headers) {
+      if (!params) {
+        params = {}
+      }
+      if (!headers) {
+        headers = {}
+      }
+      return axios({
+        method: 'GET',
+        url: path,
+        params: params,
+        headers: headers
+      })
+    },
+    onGetBesUrl: function (url) {
+      fetch(url, {
+        method: 'GET'
+      })
+        .then(response => response.arrayBuffer())
+        .then(buf => {
+          const data = new Uint8Array(buf)
+          const braille = bes2unicode(data)
+          this.str = braille
+          this.openFile = true
+          this.navIsActive = false
+        })
     }
   },
   components: {
