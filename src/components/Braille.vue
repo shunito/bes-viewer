@@ -140,6 +140,8 @@ export default {
   padding: 1rem;
   font-size: 1rem;
   border: 1px solid #CCC;
+  white-space: pre-wrap;
+  font-family: monospace;
 }
 .toc-yomi{
   font-size: 1rem;

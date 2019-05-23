@@ -15,12 +15,12 @@
               <button class="button is-small is-light" id="closeFile" v-bind:disabled="isFileClosed" @click="onFileClose">ファイルを閉じる</button>
             </div>
             <div class="navbar-item">
-              <b-switch size="is-small" v-model="isYomiChecked">
-                {{ isYomiChecked ? '読みを表示する' : '読みを表示しない' }}
-              </b-switch>
+              読み
+                <b-switch size="is-small" v-model="isYomiChecked">
+                  {{ isYomiChecked ? '表示' : '非表示' }}
+                </b-switch>
             </div>
           </div>
-
           <div class="navbar-end">
             <p class="navbar-item">⠰⠠⠃⠠⠑⠠⠎⠀⠤⠢⠥⠃⠙⠀⠘⠭⠒⠁⠒</p>
           </div>
@@ -29,7 +29,7 @@
     </header>
 
     <div class="container is-fluid">
-        <main aria-live="polite" class="section">
+        <main class="section">
           <Braille v-bind:braille="bes" :checkYomi="isYomiChecked"></Braille>
         </main>
     </div>
@@ -116,20 +116,6 @@ export default {
       this.file = null
       this.str = ''
       this.openFile = false
-    },
-    getApi: function (path, params, headers) {
-      if (!params) {
-        params = {}
-      }
-      if (!headers) {
-        headers = {}
-      }
-      return axios({
-        method: 'GET',
-        url: path,
-        params: params,
-        headers: headers
-      })
     },
     onGetBesUrl: function (url) {
       fetch(url, {
