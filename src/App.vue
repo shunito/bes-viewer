@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <header>
-      <nav class="navbar is-dark">
+      <nav class="navbar is-dark" title="メインナビゲーション" id="main-header">
         <div class="navbar-brand">
           <h1 class="navbar-item">BES Viewer α</h1>
         </div>
@@ -42,82 +42,110 @@
         </p>
       </div>
     </footer>
-
   </div>
 </template>
 
-<script>
-import Braille from './components/Braille'
-
-import bes2unicode from './module/bes2unicode'
+<script lang="ts">
+import { Component, Vue } from 'vue-property-decorator';
+import Braille from './components/Braille.vue'
+import bes2unicode from './modules/bes2unicode'
 
 import axios from 'axios'
-
+import { UrlObject } from 'url';
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
 
-export default {
-  name: 'app',
-  data: function () {
-    return {
-      navIsActive: false,
-      file: null,
-      str: '',
-      openFile: false,
-      isYomiChecked: false,
-      url: new URL(window.location)
-    }
-  },
-  computed: {
-    bes: function () {
+const location = window.location
+const url = new URL(location.origin)
+
+interface HTMLElementEvent<T extends HTMLElement> extends Event {
+    target: T;
+}
+
+interface HTMLInputEvent extends Event {
+    target: HTMLInputElement & EventTarget;
+}
+
+@Component({
+  components: {
+    Braille
+  }
+})
+export default class App extends Vue {
+
+    // Data
+    file: any = null;
+    navIsActive:boolean = false;
+    isYomiChecked:boolean = false;
+    openFile:boolean = false;
+    url: URL = url;
+    str: string = "";
+
+    // computed
+    get bes(): string {
       return this.str
-    },
-    isFileClosed: function () {
+    }
+    get isFileClosed(): boolean {
       return !this.openFile
-    },
-    isNavOpen: function () {
+    }
+    get isNavOpen(): boolean {
       return this.navIsActive
     }
-  },
-  created: function () {
-    const targetUrl = this.url.searchParams.get('url')
-    if (targetUrl.length > 5 && targetUrl.slice(-4).toLowerCase() === '.bes') {
-      this.onGetBesUrl(targetUrl)
-    }
-  },
-  methods: {
-    toggleMenu: function () {
-      this.navIsActive = !this.navIsActive
-    },
-    onFileChange: function (e) {
-      let files = e.target.files || e.dataTransfer.files
-      if (!files.length) {
-        return
-      }
-      console.log(files[0])
 
-      const reader = new FileReader()
-      reader.onloadend = (theFile) => {
-        if (theFile.target.readyState === FileReader.DONE) {
-          this.openFile = true
-          this.navIsActive = false
-
-          const arr = new Uint8Array(theFile.target.result)
-          const braille = bes2unicode(arr)
-          this.str = braille
+    created() {
+        const targetUrl = this.url.searchParams.get('url')
+        if (targetUrl && targetUrl.length > 5 && targetUrl.slice(-4).toLowerCase() === '.bes') {
+        this.onGetBesUrl(targetUrl)
         }
-      }
+    }
 
-      this.file = files[0]
-      reader.readAsArrayBuffer(files[0])
-    },
-    onFileClose: function () {
+    toggleMenu() {
+      this.navIsActive = !this.navIsActive
+    }
+
+    onFileChange(event?: HTMLInputEvent) {
+        let files: any = [];
+        if(event) {
+            const evTarget = event.target;
+            files = evTarget.files
+            if (!files.length) {
+                return
+            }
+        }
+        else{
+            return;
+        }
+
+        const reader = new FileReader()
+        reader.onloadend = (theFile) => {
+            const target: any = theFile.target;
+
+            if ( target && target.readyState === FileReader.DONE) {
+            this.openFile = true
+            this.navIsActive = false
+
+            const result:string | ArrayBuffer = target.result as ArrayBuffer;
+            const arr =  new Uint8Array(result)
+
+            //console.log( typeof result )
+
+            const braille = bes2unicode( arr )
+            this.str = braille
+            }
+        }
+
+        this.file = files[0];
+        reader.readAsArrayBuffer(files[0])
+    }
+
+    onFileClose() {
       const fileInput = document.getElementById('file')
-      fileInput.value = ''
+      //fileInput.value = ''
       this.file = null
       this.str = ''
       this.openFile = false
-    },
-    onGetBesUrl: function (url) {
+    }
+
+    onGetBesUrl(url:string) {
       fetch(url, {
         method: 'GET'
       })
@@ -130,12 +158,10 @@ export default {
           this.navIsActive = false
         })
     }
-  },
-  components: {
-    Braille
-  }
+
 }
+
 </script>
 
-<style>
+<style lang="scss">
 </style>
