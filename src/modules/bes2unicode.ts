@@ -1,6 +1,6 @@
 // BESファイルのUnicode変換試作
 
-let list = []
+const list:any = []
 list['a0'] = '⠀'
 list['fe'] = '@LB@'
 list['0d'] = ''
@@ -78,14 +78,16 @@ list['c8'] = '⠨'
 list['d0'] = '⠰'
 list['c0'] = '⠠'
 
-function bes2unicode (bytes) {
+function bes2unicode (bytes:Uint8Array) {
   const headerByte = 1029
 
-  let char
+  let char:string
+  let byte:number
   let chars = []
 
   for (var i = headerByte, n = bytes.length; i < n; i++) {
-    char = bytes[i].toString(16)
+    byte = bytes[i]
+    char = byte.toString(16)
     if (char.length < 2) {
       char = '0' + char
     }
