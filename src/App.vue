@@ -51,7 +51,6 @@ import Braille from './components/Braille.vue'
 import bes2unicode from './modules/bes2unicode'
 
 import axios from 'axios'
-import { UrlObject } from 'url';
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
 
 const location = window.location
@@ -138,8 +137,6 @@ export default class App extends Vue {
     }
 
     onFileClose() {
-      const fileInput = document.getElementById('file')
-      //fileInput.value = ''
       this.file = null
       this.str = ''
       this.openFile = false
