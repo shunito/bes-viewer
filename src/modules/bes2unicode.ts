@@ -83,9 +83,9 @@ function bes2unicode (bytes:Uint8Array) {
 
   let char:string
   let byte:number
-  let chars = []
+  const chars: string[] = []
 
-  for (var i = headerByte, n = bytes.length; i < n; i++) {
+  for (let i = headerByte, n = bytes.length; i < n; i++) {
     byte = bytes[i]
     char = byte.toString(16)
     if (char.length < 2) {

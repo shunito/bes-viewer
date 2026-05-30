@@ -56,10 +56,6 @@ axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded
 const location = window.location
 const url = new URL(location.origin)
 
-interface HTMLElementEvent<T extends HTMLElement> extends Event {
-    target: T;
-}
-
 interface HTMLInputEvent extends Event {
     target: HTMLInputElement & EventTarget;
 }
