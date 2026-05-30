@@ -93,46 +93,46 @@ export default class App extends Vue {
         }
     }
 
-    toggleMenu() {
+    toggleMenu = () => {
       this.navIsActive = !this.navIsActive
     }
 
-    onFileChange(event?: HTMLInputEvent) {
-        let files: any = [];
-        if(event) {
-            const evTarget = event.target;
-            files = evTarget.files
-            if (!files.length) {
-                return
-            }
+    onFileChange = (event?: HTMLInputEvent) => {
+      let files: any = [];
+      if(event) {
+        const evTarget = event.target;
+        files = evTarget.files
+        if (!files.length) {
+          return
         }
-        else{
-            return;
+      }
+      else{
+        return;
+      }
+
+      const reader = new FileReader()
+      reader.onloadend = (theFile) => {
+        const target: any = theFile.target;
+
+        if ( target && target.readyState === FileReader.DONE) {
+        this.openFile = true
+        this.navIsActive = false
+
+        const result:string | ArrayBuffer = target.result as ArrayBuffer;
+        const arr =  new Uint8Array(result)
+
+        //console.log( typeof result )
+
+        const braille = bes2unicode( arr )
+        this.str = braille
         }
+      }
 
-        const reader = new FileReader()
-        reader.onloadend = (theFile) => {
-            const target: any = theFile.target;
-
-            if ( target && target.readyState === FileReader.DONE) {
-            this.openFile = true
-            this.navIsActive = false
-
-            const result:string | ArrayBuffer = target.result as ArrayBuffer;
-            const arr =  new Uint8Array(result)
-
-            //console.log( typeof result )
-
-            const braille = bes2unicode( arr )
-            this.str = braille
-            }
-        }
-
-        this.file = files[0];
-        reader.readAsArrayBuffer(files[0])
+      this.file = files[0];
+      reader.readAsArrayBuffer(files[0])
     }
 
-    onFileClose() {
+    onFileClose = () => {
       this.file = null
       this.str = ''
       this.openFile = false
