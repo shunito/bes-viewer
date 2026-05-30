@@ -15,7 +15,7 @@
     "core-js": "^3.49.0",
     "register-service-worker": "^1.7.2",
     "tenji": "^1.0.4",
-    "vue": "^2.7.16",
+    "vue": "^3.0.0",
     "vue-class-component": "^7.2.6",
     "vue-property-decorator": "^8.5.1"
   },
