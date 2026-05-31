@@ -1,5 +1,7 @@
 # CLAUDE.md
 
+全プロジェクト共通のCLAUDE.md（~/.claude/CLAUDE.md）の内容を参照してください。 
+
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## 概要
