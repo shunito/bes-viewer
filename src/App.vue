@@ -9,16 +9,19 @@
         <div id="navbarMenu" class="navbar-menu is-active">
           <div class="navbar-start">
             <div class="navbar-item">
-              <label>ファイル <input type="file" id="file" name="file" accept=".bes" @change="onFileChange" /></label>
+              <label for="file">ファイル</label>
+              <input type="file" id="file" name="file" accept=".bes" @change="onFileChange" />
             </div>
             <div class="navbar-item">
-              <button class="button is-small is-light" id="closeFile" v-bind:disabled="isFileClosed" @click="onFileClose">ファイルを閉じる</button>
+              <button class="button is-small is-light" id="closeFile" :disabled="isFileClosed" @click="onFileClose">ファイルを閉じる</button>
             </div>
             <div class="navbar-item">
-              読み
-                <b-switch size="is-small" v-model="isYomiChecked">
-                  {{ isYomiChecked ? '表示' : '非表示' }}
-                </b-switch>
+              <label class="switch is-rounded is-small" for="yomi-switch">
+                <span class="control-label">読み</span>
+                <input id="yomi-switch" type="checkbox" role="switch" v-model="isYomiChecked">
+                <span class="check ml-2"></span>
+                <span class="ml-2">{{ isYomiChecked ? '表示' : '非表示' }}</span>
+              </label>
             </div>
           </div>
           <div class="navbar-end">
@@ -30,7 +33,7 @@
 
     <div class="container is-fluid">
         <main class="section">
-          <Braille v-bind:braille="bes" :checkYomi="isYomiChecked"></Braille>
+          <Braille :braille="bes" :checkYomi="isYomiChecked"></Braille>
         </main>
     </div>
 
@@ -45,115 +48,58 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+<script setup lang="ts">
+import { ref, computed, onMounted } from 'vue'
 import Braille from './components/Braille.vue'
 import bes2unicode from './modules/bes2unicode'
 
-import axios from 'axios'
-axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
+const isYomiChecked = ref(false)
+const openFile = ref(false)
+const str = ref('')
 
-const location = window.location
-const url = new URL(location.origin)
+const bes = computed(() => str.value)
+const isFileClosed = computed(() => !openFile.value)
 
-interface HTMLInputEvent extends Event {
-    target: HTMLInputElement & EventTarget;
+
+const onFileChange = (event: Event) => {
+  const input = event.target as HTMLInputElement
+  const files = input.files
+  if (!files || !files.length) return
+
+  const reader = new FileReader()
+  reader.onloadend = (theFile) => {
+    const target = theFile.target as FileReader
+    if (target && target.readyState === FileReader.DONE) {
+      openFile.value = true
+      const result = target.result as ArrayBuffer
+      const arr = new Uint8Array(result)
+      str.value = bes2unicode(arr)
+    }
+  }
+  reader.readAsArrayBuffer(files[0])
 }
 
-@Component({
-  components: {
-    Braille
+const onFileClose = () => {
+  str.value = ''
+  openFile.value = false
+}
+
+const onGetBesUrl = (url: string) => {
+  fetch(url, { method: 'GET' })
+    .then(response => response.arrayBuffer())
+    .then(buf => {
+      str.value = bes2unicode(new Uint8Array(buf))
+      openFile.value = true
+    })
+}
+
+onMounted(() => {
+  const params = new URL(window.location.href).searchParams
+  const targetUrl = params.get('url')
+  if (targetUrl && targetUrl.length > 5 && targetUrl.slice(-4).toLowerCase() === '.bes') {
+    onGetBesUrl(targetUrl)
   }
 })
-export default class App extends Vue {
-
-    // Data
-    file: any = null;
-    navIsActive:boolean = false;
-    isYomiChecked:boolean = false;
-    openFile:boolean = false;
-    url: URL = url;
-    str: string = "";
-
-    // computed
-    get bes(): string {
-      return this.str
-    }
-    get isFileClosed(): boolean {
-      return !this.openFile
-    }
-    get isNavOpen(): boolean {
-      return this.navIsActive
-    }
-
-    created() {
-        const targetUrl = this.url.searchParams.get('url')
-        if (targetUrl && targetUrl.length > 5 && targetUrl.slice(-4).toLowerCase() === '.bes') {
-        this.onGetBesUrl(targetUrl)
-        }
-    }
-
-    toggleMenu = () => {
-      this.navIsActive = !this.navIsActive
-    }
-
-    onFileChange = (event?: HTMLInputEvent) => {
-      let files: any = [];
-      if(event) {
-        const evTarget = event.target;
-        files = evTarget.files
-        if (!files.length) {
-          return
-        }
-      }
-      else{
-        return;
-      }
-
-      const reader = new FileReader()
-      reader.onloadend = (theFile) => {
-        const target: any = theFile.target;
-
-        if ( target && target.readyState === FileReader.DONE) {
-        this.openFile = true
-        this.navIsActive = false
-
-        const result:string | ArrayBuffer = target.result as ArrayBuffer;
-        const arr =  new Uint8Array(result)
-
-        //console.log( typeof result )
-
-        const braille = bes2unicode( arr )
-        this.str = braille
-        }
-      }
-
-      this.file = files[0];
-      reader.readAsArrayBuffer(files[0])
-    }
-
-    onFileClose = () => {
-      this.file = null
-      this.str = ''
-      this.openFile = false
-    }
-
-    onGetBesUrl(url:string) {
-      fetch(url, {
-        method: 'GET'
-      })
-        .then(response => response.arrayBuffer())
-        .then(buf => {
-          const data = new Uint8Array(buf)
-          const braille = bes2unicode(data)
-          this.str = braille
-          this.openFile = true
-          this.navIsActive = false
-        })
-    }
-
-}
-
 </script>
 
 <style lang="scss">

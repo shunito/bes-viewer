@@ -5,36 +5,36 @@
     <p v-if="checkYomi">{{ tenji2yomi(bes.docTitle) }}</p>
     <nav v-if="bes.title" aria-label="目次" class="toc content" id="toc">
       <ol>
-        <li v-for="(title,pno) in bes.title" v-bind:key="pno">
+        <li v-for="(title,pno) in bes.title" :key="pno">
           <a :href="'#page'+(pno+1)">{{title}}</a>
           <p v-if="checkYomi" class="toc-yomi">{{ tenji2yomi(title) }}</p>
         </li>
       </ol>
     </nav>
     <article>
-      <section v-for="(page,pno) in bes.body" v-bind:key="pno" class="columns page" :id="'page'+(pno+1)">
+      <section v-for="(page,pno) in bes.body" :key="pno" class="columns page" :id="'page'+(pno+1)">
         <div class="column">
-        <template v-for="(line,lno) in page">
-          <hr v-if="line === '@HR@'" v-bind:key="lno">
-          <h1 v-else-if="line.substr(0,4) ==='@H1@'" v-bind:key="lno">{{line.slice(4)}}</h1>
-          <h2 v-else-if="line.substr(0,4) ==='@H2@'" v-bind:key="lno">{{line.slice(4)}}</h2>
-          <p v-else-if="line.length === 0" v-bind:key="lno"><br /></p>
-          <p v-else v-bind:key="lno">{{line}}</p>
+        <template v-for="(line,lno) in page" :key="lno">
+          <hr v-if="line === '@HR@'">
+          <h1 v-else-if="line.slice(0,4) ==='@H1@'">{{line.slice(4)}}</h1>
+          <h2 v-else-if="line.slice(0,4) ==='@H2@'">{{line.slice(4)}}</h2>
+          <p v-else-if="line.length === 0"><br /></p>
+          <p v-else>{{line}}</p>
         </template>
         <p class="is-size-6 has-text-right">
-          <a href="#docTop" aria-labelledby="toc"><b-icon icon="arrow-up" size="is-small" aria-hidden="true" />⠾⠩⠐⠳⠯⠀⠾⠐⠞⠙</a>
+          <a href="#docTop" aria-labelledby="toc"><o-icon icon="arrow-up" size="small" aria-hidden="true" />⠾⠩⠐⠳⠯⠀⠾⠐⠞⠙</a>
         </p>
         </div>
         <div v-if="checkYomi" class="column is-one-third yomi">
-          <template v-for="(line,lno) in page">
-            <hr v-if="line === '@HR@'" v-bind:key="lno">
-            <h1 v-else-if="line.substr(0,4) ==='@H1@'" v-bind:key="lno">{{ tenji2yomi(line.slice(4)) }}</h1>
-            <h2 v-else-if="line.substr(0,4) ==='@H2@'" v-bind:key="lno">{{ tenji2yomi(line.slice(4)) }}</h2>
-            <p v-else-if="line.length === 0" v-bind:key="lno"><br /></p>
-            <p v-else v-bind:key="lno">{{ tenji2yomi(line) }}</p>
+          <template v-for="(line,lno) in page" :key="lno">
+            <hr v-if="line === '@HR@'">
+            <h1 v-else-if="line.slice(0,4) ==='@H1@'">{{ tenji2yomi(line.slice(4)) }}</h1>
+            <h2 v-else-if="line.slice(0,4) ==='@H2@'">{{ tenji2yomi(line.slice(4)) }}</h2>
+            <p v-else-if="line.length === 0"><br /></p>
+            <p v-else>{{ tenji2yomi(line) }}</p>
           </template>
           <p class="is-size-6 has-text-right">
-            <a href="#docTop"><b-icon icon="arrow-up" size="is-small" aria-hidden="true" />もくじへ もどる</a>
+            <a href="#docTop"><o-icon icon="arrow-up" size="small" aria-hidden="true" />もくじへ もどる</a>
           </p>
         </div>
       </section>
@@ -42,37 +42,44 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+<script setup lang="ts">
+import { computed } from 'vue'
+import * as tenji from 'tenji'
 
-const tenji = require('tenji')
+interface ParsedBraille {
+  docTitle: string | false;
+  title: string[];
+  body: string[][];
+}
 
-function isHeader (line:string) :boolean {
-  if (line.split('⠒').length > 5) {
-    return false
-  }
+const props = withDefaults(defineProps<{
+  braille?: string;
+  checkYomi?: boolean;
+}>(), {
+  braille: '',
+  checkYomi: false
+})
 
-  if (line.length < 5) {
-    return false
-  }
+function isHeader(line: string): boolean {
+  if (line.split('⠒').length > 5) return false
+  if (line.length < 5) return false
   return true
 }
 
-function splitbraille (str:string):object {
-  let pages:string[]  = str.split('@PB@')
-  let bodys:any[] = []
-  let titles:string[] = []
-  let docTitle:boolean| string = false
+function splitbraille(str: string): ParsedBraille {
+  const pages: string[] = str.split('@PB@')
+  const bodys: string[][] = []
+  const titles: string[] = []
+  let docTitle: boolean | string = false
 
   pages.forEach(page => {
-    const lines:string[] = page.split('@LB@')
+    const lines: string[] = page.split('@LB@')
     let headding = false
-    let p:string[] = []
-    let trimLine:string = ''
+    const p: string[] = []
 
     lines.forEach(line => {
-      trimLine = line.replace(/^⠀+|⠀+$/g, '')
-      if (headding === false) {
+      const trimLine = line.replace(/^⠀+|⠀+$/g, '')
+      if (!headding) {
         if (isHeader(trimLine)) {
           titles.push(trimLine)
           if (docTitle === false) {
@@ -84,75 +91,30 @@ function splitbraille (str:string):object {
           headding = true
         }
       }
-      p.push(line as string)
+      p.push(line)
     })
 
-    // ページの見出しが見つからない場合は最初の行を見出しとする
-    if (headding === false) {
+    if (!headding) {
       titles.push('⠀⠀')
     }
     bodys.push(p)
   })
 
-  return {
-    docTitle: docTitle,
-    title: titles,
-    body: bodys
-  }
+  return { docTitle, title: titles, body: bodys }
 }
 
-/*
-export default {
-  name: 'braille',
-  props: ['braille', 'checkYomi'],
-  computed: {
-    isFileClose: function () {
-      return this.braille.length === 0
-    },
-    bes: function () {
-      return splitbraille(this.braille)
-    }
-  },
-  methods: {
-    tenji2yomi: function (str) {
-      let line = str
-      if (line.substr(0, 4) === '@H1@') { line = line.slice(4) }
-      if (line.substr(0, 4) === '@H2@') { line = line.slice(4) }
-      if (line.substr(0, 4) === '@HR@') { line = '<hr />' }
-      if (line.length === 0) { line = '<br />' }
-      return tenji.fromTenji(line)
-    }
-  }
+const isFileClose = computed(() => props.braille.length === 0)
+const bes = computed((): ParsedBraille => splitbraille(props.braille))
+
+function tenji2yomi(str: string | false): string {
+  if (str === false) return ''
+  let line = str
+  if (line.slice(0, 4) === '@H1@') line = line.slice(4)
+  if (line.slice(0, 4) === '@H2@') line = line.slice(4)
+  if (line.slice(0, 4) === '@HR@') return '<hr />'
+  if (line.length === 0) return '<br />'
+  return tenji.fromTenji(line)
 }
-*/
-
-@Component
-export default class Braille extends Vue {
-  @Prop({ default: '' })
-  braille!: string;
-
-  @Prop({ default: false })
-  checkYomi!:boolean;
-
-  get isFileClose(){
-      return this.braille.length === 0
-  }
-
-  get bes(){
-      return splitbraille(this.braille)
-  }
-
-  tenji2yomi(str:string) :string {
-      let line:string = str
-      if (line.substr(0, 4) === '@H1@') { line = line.slice(4) }
-      if (line.substr(0, 4) === '@H2@') { line = line.slice(4) }
-      if (line.substr(0, 4) === '@HR@') { line = '<hr />' }
-      if (line.length === 0) { line = '<br />' }
-      return tenji.fromTenji(line)
-    }
-  
-}
-
 </script>
 
 <style>
