@@ -1,13 +1,6 @@
-import Vue from 'vue'
+import { createApp } from 'vue'
+import Oruga from '@oruga-ui/oruga-next'
+import '@oruga-ui/theme-bulma/dist/bulma.css'
 import App from './App.vue'
-import './registerServiceWorker'
 
-import Buefy from 'buefy'
-import 'buefy/dist/buefy.css'
-
-Vue.use(Buefy)
-Vue.config.productionTip = false
-
-new Vue({
-  render: h => h(App),
-}).$mount('#app')
+createApp(App).use(Oruga).mount('#app')

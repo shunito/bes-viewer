@@ -1,7 +1,5 @@
 {
   "typescript.tsdk": "node_modules/typescript/lib",
-  "vetur.validation.template": true,
-  "vetur.experimental.templateInterpolationService": true,
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"
   }
