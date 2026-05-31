@@ -45,12 +45,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import * as tenji from 'tenji'
-
-interface ParsedBraille {
-  docTitle: string | false;
-  title: string[];
-  body: string[][];
-}
+import { splitbraille, type ParsedBraille } from '@/modules/brailleParser'
 
 const props = withDefaults(defineProps<{
   braille?: string;
@@ -59,49 +54,6 @@ const props = withDefaults(defineProps<{
   braille: '',
   checkYomi: false
 })
-
-function isHeader(line: string): boolean {
-  if (line.split('⠒').length > 5) return false
-  if (line.length < 5) return false
-  return true
-}
-
-function splitbraille(str: string): ParsedBraille {
-  const pages: string[] = str.split('@PB@')
-  const bodys: string[][] = []
-  const titles: string[] = []
-  let docTitle: boolean | string = false
-
-  pages.forEach(page => {
-    const lines: string[] = page.split('@LB@')
-    let headding = false
-    const p: string[] = []
-
-    lines.forEach(line => {
-      const trimLine = line.replace(/^⠀+|⠀+$/g, '')
-      if (!headding) {
-        if (isHeader(trimLine)) {
-          titles.push(trimLine)
-          if (docTitle === false) {
-            docTitle = trimLine
-            line = '@H1@' + line
-          } else {
-            line = '@H2@' + line
-          }
-          headding = true
-        }
-      }
-      p.push(line)
-    })
-
-    if (!headding) {
-      titles.push('⠀⠀')
-    }
-    bodys.push(p)
-  })
-
-  return { docTitle, title: titles, body: bodys }
-}
 
 const isFileClose = computed(() => props.braille.length === 0)
 const bes = computed((): ParsedBraille => splitbraille(props.braille))

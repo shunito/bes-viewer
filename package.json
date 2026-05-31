@@ -6,7 +6,9 @@
     "dev": "vite",
     "build": "vue-tsc && vite build",
     "preview": "vite preview",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "test": "vitest",
+    "test:ui": "vitest --ui"
   },
   "dependencies": {
     "@oruga-ui/oruga-next": "^0.8",
@@ -19,12 +21,15 @@
   "devDependencies": {
     "@eslint/js": "^9.18",
     "@vitejs/plugin-vue": "^5.2",
+    "@vitest/ui": "^4.1.7",
     "eslint": "^9.18",
     "eslint-plugin-vue": "^10.0",
+    "jsdom": "^29.1.1",
     "typescript": "^5.8",
     "typescript-eslint": "^8.21",
     "vite": "^6.0",
     "vite-plugin-pwa": "^0.21",
+    "vitest": "^4.1.7",
     "vue-tsc": "^2.2"
   }
 }

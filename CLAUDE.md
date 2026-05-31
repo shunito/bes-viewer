@@ -12,22 +12,25 @@ BES Viewer は、日本で使用される BES（点字電子書籍標準）フ�
 
 ```bash
 npm install          # 依存パッケージのインストール
-npm run serve        # ホットリロード付き開発サーバー（localhost:8080）
+npm run dev          # ホットリロード付き開発サーバー（localhost:5173）
 npm run build        # プロダクションビルド（出力先: dist/）
+npm run preview      # プロダクションビルドのプレビュー
 npm run lint         # Lint と自動修正
+npm test             # テスト実行（watch モード）
+npm test -- --run    # テストを一度だけ実行して終了
 ```
-
-> スクリプトでは `cross-env` 経由で `NODE_OPTIONS=--openssl-legacy-provider` が設定されています。Node.js バージョン互換性のために必要なため削除しないこと。
 
 ## アーキテクチャ
 
-**Vue 2** のシングルページアプリケーション（ルーター・Vuex なし）。アプリ全体はコンポーネント 2 つと変換モジュール 1 つで構成されています。
+**Vue 3** のシングルページアプリケーション（ルーター・Pinia なし）。アプリ全体はコンポーネント 2 つと変換モジュール 2 つで構成されています。
 
 - **`src/modules/bes2unicode.ts`** — コアロジック。BES ファイルの `Uint8Array` を受け取り、1029 バイトのヘッダーをスキップした後、各バイトを 2 桁の16進数文字列として Unicode 点字文字または特殊トークン（`@LB@`、`@PB@`、`@HR@`）にマッピングして Unicode 文字列として返す。
 
+- **`src/modules/brailleParser.ts`** — 点字文字列のパースロジック。`splitbraille()` がトークン区切りの文字列をページ・行単位に解析し、見出しを検出して `{ docTitle, title[], body[][] }` 構造の `ParsedBraille` オブジェクトを返す。`isHeader()` が見出し判定を担当。
+
 - **`src/App.vue`** — ルートコンポーネント。`<input type="file">` またはクエリパラメータ `?url=` 経由のファイル取得を担当し、`bes2unicode()` を呼び出して得た Unicode 文字列を `braille` プロップとして `Braille` コンポーネントに渡す。
 
-- **`src/components/Braille.vue`** — 点字コンテンツのレンダリング担当。内部の `splitbraille()` 関数がトークン区切りの文字列をページ・行単位に解析し、見出しを検出（ページ内で最初に現れる十分な長さの行）して `{ docTitle, title[], body[][] }` 構造のオブジェクトを生成する。目次ナビゲーションとページ単位の `<section>` をレンダリングし、`tenji` パッケージの `tenji.fromTenji()` を使った読み仮名カラムのオプション表示にも対応。
+- **`src/components/Braille.vue`** — 点字コンテンツのレンダリング担当。`brailleParser.ts` の `splitbraille()` を使ってデータを整形し、目次ナビゲーションとページ単位の `<section>` をレンダリングする。`tenji` パッケージの `tenji.fromTenji()` を使った読み仮名カラムのオプション表示にも対応。
 
 ## 点字文字列内の特殊トークン
 
@@ -41,12 +44,13 @@ npm run lint         # Lint と自動修正
 
 ## 技術スタック
 
-- Vue 2 + `vue-class-component` + `vue-property-decorator`（クラスベースコンポーネント）
-- TypeScript（Babel 経由で ES5 にトランスパイル）
-- Buefy（Bulma ベースの UI コンポーネントライブラリ）
+- Vue 3 + Composition API（`<script setup>`）
+- TypeScript 5
+- Oruga UI（Bulma テーマ）
+- Vite 6 によるビルド
+- Vitest によるユニットテスト
 - PWA プラグイン（`src/registerServiceWorker.ts` でサービスワーカー登録）
-- `@vue/cli-service` による Webpack ビルド
 
 ## エディタ設定
 
-**Vetur** を使用すること（Volar は不可）。Volar は Vue 2 のテンプレートで誤検知エラーを出します。`.vscode/` のワークスペース設定が既に適切に構成されています。
+**Volar**（Vue Language Features）を使用すること。Vue 3 の公式サポート拡張です。
