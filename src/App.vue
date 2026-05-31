@@ -10,7 +10,7 @@
           <div class="navbar-start">
             <div class="navbar-item">
               <label for="file">ファイル</label>
-              <input type="file" id="file" name="file" accept=".bes" @change="onFileChange" />
+              <input type="file" id="file" name="file" accept=".bes" @change="onFileChange" ref="fileInput" />
             </div>
             <div class="navbar-item">
               <button class="button is-small is-light" id="closeFile" :disabled="isFileClosed" @click="onFileClose">ファイルを閉じる</button>
@@ -56,6 +56,7 @@ import bes2unicode from './modules/bes2unicode'
 const isYomiChecked = ref(false)
 const openFile = ref(false)
 const str = ref('')
+const fileInput = ref<HTMLInputElement | null>(null)
 
 const bes = computed(() => str.value)
 const isFileClosed = computed(() => !openFile.value)
@@ -82,6 +83,7 @@ const onFileChange = (event: Event) => {
 const onFileClose = () => {
   str.value = ''
   openFile.value = false
+  if (fileInput.value) fileInput.value.value = ''
 }
 
 const onGetBesUrl = (url: string) => {
