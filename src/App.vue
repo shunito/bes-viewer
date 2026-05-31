@@ -9,16 +9,19 @@
         <div id="navbarMenu" class="navbar-menu is-active">
           <div class="navbar-start">
             <div class="navbar-item">
-              <label>ファイル <input type="file" id="file" name="file" accept=".bes" @change="onFileChange" /></label>
+              <label for="file">ファイル</label>
+              <input type="file" id="file" name="file" accept=".bes" @change="onFileChange" />
             </div>
             <div class="navbar-item">
               <button class="button is-small is-light" id="closeFile" :disabled="isFileClosed" @click="onFileClose">ファイルを閉じる</button>
             </div>
             <div class="navbar-item">
-              読み
-                <o-switch size="small" v-model="isYomiChecked">
-                  {{ isYomiChecked ? '表示' : '非表示' }}
-                </o-switch>
+              <label class="switch is-rounded is-small" for="yomi-switch">
+                <span class="control-label">読み</span>
+                <input id="yomi-switch" type="checkbox" role="switch" v-model="isYomiChecked">
+                <span class="check ml-2"></span>
+                <span class="ml-2">{{ isYomiChecked ? '表示' : '非表示' }}</span>
+              </label>
             </div>
           </div>
           <div class="navbar-end">
@@ -52,15 +55,11 @@ import bes2unicode from './modules/bes2unicode'
 
 const isYomiChecked = ref(false)
 const openFile = ref(false)
-const navIsActive = ref(false)
 const str = ref('')
 
 const bes = computed(() => str.value)
 const isFileClosed = computed(() => !openFile.value)
 
-const toggleMenu = () => {
-  navIsActive.value = !navIsActive.value
-}
 
 const onFileChange = (event: Event) => {
   const input = event.target as HTMLInputElement
@@ -72,7 +71,6 @@ const onFileChange = (event: Event) => {
     const target = theFile.target as FileReader
     if (target && target.readyState === FileReader.DONE) {
       openFile.value = true
-      navIsActive.value = false
       const result = target.result as ArrayBuffer
       const arr = new Uint8Array(result)
       str.value = bes2unicode(arr)
@@ -92,7 +90,6 @@ const onGetBesUrl = (url: string) => {
     .then(buf => {
       str.value = bes2unicode(new Uint8Array(buf))
       openFile.value = true
-      navIsActive.value = false
     })
 }
 

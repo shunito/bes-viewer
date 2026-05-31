@@ -1,6 +1,7 @@
 import { createApp } from 'vue'
 import Oruga from '@oruga-ui/oruga-next'
+import { bulmaConfig } from '@oruga-ui/theme-bulma'
 import '@oruga-ui/theme-bulma/dist/bulma.css'
 import App from './App.vue'
 
-createApp(App).use(Oruga).mount('#app')
+createApp(App).use(Oruga, bulmaConfig).mount('#app')
