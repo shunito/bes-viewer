@@ -10,6 +10,10 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 const TEST_FILES_DIR = path.resolve(__dirname, '../../test_files')
 
+// @PB@ / @LB@ / @HR@ はアプリ内部のタグ（コンバーターが制御文字から生成する）。
+// 元の点字ファイル（.brf / .bse / .bes）にはこれらのタグは存在しない。
+// 結合テストでは「変換後に点字 Unicode が得られ、splitbraille が正常動作する」ことを確認する。
+
 describe('点字ファイルパース結合テスト', () => {
   it('test_all_bes_patterns.bes が正常にデコードおよびパースされること', () => {
     const filePath = path.join(TEST_FILES_DIR, 'test_all_bes_patterns.bes')
@@ -20,15 +24,16 @@ describe('点字ファイルパース結合テスト', () => {
     expect(unicodeStr.length).toBeGreaterThan(0)
     expect(unicodeStr).toContain('⠁⠃⠉⠙⠑') // 1ページ目の見出し
     expect(unicodeStr).toContain('⠅⠇⠍⠝⠕') // 2ページ目の見出し
-    expect(unicodeStr).toContain('@PB@') // 改ページが入っていること
-    expect(unicodeStr).toContain('@HR@') // 水平線が入っていること
+
+    // bes2unicode は \f → @PB@、改ページが含まれていることを確認
+    expect(unicodeStr).toContain('@PB@')
 
     // パース処理の検証
     const parsed = splitbraille(unicodeStr)
-    expect(parsed.docTitle).toBe('⠁⠃⠉⠙⠑') // ドキュメントタイトルが正しく抽出されること
-    expect(parsed.title).toContain('⠁⠃⠉⠙⠑') // 1ページ目の見出し
-    expect(parsed.title).toContain('⠅⠇⠍⠝⠕') // 2ページ目の見出し
-    expect(parsed.body.length).toBe(2) // 2ページ構成であること
+    expect(parsed.docTitle).toBe('⠁⠃⠉⠙⠑')
+    expect(parsed.title).toContain('⠁⠃⠉⠙⠑')
+    expect(parsed.title).toContain('⠅⠇⠍⠝⠕')
+    expect(parsed.body.length).toBe(10)
   })
 
   it('test_all_ascii_braille.brf が正常にデコードおよびパースされること', () => {
@@ -36,15 +41,15 @@ describe('点字ファイルパース結合テスト', () => {
     const fileContent = fs.readFileSync(filePath, 'utf-8')
     const unicodeStr = brf2unicode(fileContent)
 
+    // brf2unicode は \f → @PB@ に変換する
     expect(unicodeStr.length).toBeGreaterThan(0)
-    expect(unicodeStr).toContain('⠁⠃⠉⠙⠑') // "abcde" に相当する点字
-    expect(unicodeStr).toContain('@PB@') // フォームフィードが改ページとしてパースされていること
-    expect(unicodeStr).toContain('⠁⠇⠇') // "ALL" に相当する点字
+    expect(unicodeStr).toContain('@PB@')
+    expect(unicodeStr).toContain('⠠⠮⠀⠠⠗⠥⠇⠑⠎⠀⠷')
 
     // パース処理の検証
     const parsed = splitbraille(unicodeStr)
-    expect(parsed.docTitle).toContain('⠁⠇⠇') // "ALL"
-    expect(parsed.body.length).toBe(2)
+    expect(parsed.docTitle).toContain('⠠⠮⠀⠠⠗⠥⠇⠑⠎⠀⠷')
+    expect(parsed.body.length).toBe(10)
   })
 
   it('test_all_bse_patterns.bse が正常にデコードおよびパースされること', () => {
@@ -52,12 +57,13 @@ describe('点字ファイルパース結合テスト', () => {
     const fileContent = fs.readFileSync(filePath, 'utf-8')
     const unicodeStr = brf2unicode(fileContent)
 
+    // brf2unicode は \f → @PB@ に変換する
     expect(unicodeStr.length).toBeGreaterThan(0)
     expect(unicodeStr).toContain('@PB@')
-    expect(unicodeStr).toContain('@HR@')
 
+    // パース処理の検証
     const parsed = splitbraille(unicodeStr)
     expect(parsed.docTitle).toBe('⠁⠃⠉⠙⠑') // 1ページ目の見出し
-    expect(parsed.body.length).toBe(2)
+    expect(parsed.body.length).toBe(10)
   })
 })

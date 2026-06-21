@@ -48,6 +48,7 @@ import * as tenji from 'tenji'
 // OIcon removed; not needed for tests
 import { splitbraille, type ParsedBraille } from '@/modules/brailleParser'
 import { unicode2brf } from '../modules/brf2unicode'
+import { decodeUEB } from '../modules/uebDecoder'
 import { useI18n } from '../modules/i18n'
 
 const { t, locale } = useI18n()
@@ -73,7 +74,7 @@ function tenji2yomi(str: string | false): string {
   if (line.slice(0, 4) === '@HR@') return '<hr />'
   if (line.length === 0) return '<br />'
   if (props.isBrf) {
-    return unicode2brf(line)
+    return decodeUEB(unicode2brf(line))
   }
   // Japanese reading conversion for locale 'ja'
   if (locale.value === 'ja') {

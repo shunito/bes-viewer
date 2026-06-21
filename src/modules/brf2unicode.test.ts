@@ -14,8 +14,8 @@ describe('brf2unicode', () => {
     expect(brf2unicode('abc')).toBe('⠁⠃⠉')
   })
 
-  it('数字の変換 (1, 2, 3) → (⠁, ⠃, ⠉)', () => {
-    expect(brf2unicode('123')).toBe('⠁⠃⠉')
+  it('数字の変換 (1, 2, 3) → (⠂, ⠆, ⠒)', () => {
+    expect(brf2unicode('123')).toBe('⠂⠆⠒')
   })
 
   it('改行コードの変換 (LF, CRLF) → @LB@', () => {
@@ -44,5 +44,6 @@ describe('brf2unicode', () => {
     expect(unicode2brf('⠁⠃⠉')).toBe('abc')
     expect(unicode2brf('⠓⠑⠇⠇⠕⠠⠀⠺⠕⠗⠇⠙⠮')).toBe('hello, world!')
     expect(unicode2brf('⠁@LB@⠃')).toBe('a@LB@b')
+    expect(unicode2brf('⠂⠆⠒')).toBe('123')
   })
 })
