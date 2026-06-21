@@ -1,9 +1,9 @@
 <template>
-  <p v-if="isFileClose" class="is-size-2 is-size-4-mobile">⠢⠥⠃⠙⠊⠀⠻⠴⠕⠩⠳⠟⠀⠩⠐⠕⠱⠃<br/>ファイルを選択してください</p>
+  <p v-if="isFileClose" class="is-size-2 is-size-4-mobile">⠢⠥⠃⠙⠊⠀⠻⠴⠕⠩⠳⠟⠀⠩⠐⠕⠱⠃<br/>{{ t('placeholder') }}</p>
   <div v-else class="besbody is-size-3 is-size-5-mobile" role="document" id="docTop">
     <h1 v-if="bes.docTitle">{{ bes.docTitle }}</h1>
     <p v-if="checkYomi">{{ tenji2yomi(bes.docTitle) }}</p>
-    <nav v-if="bes.title" aria-label="目次" class="toc content" id="toc">
+    <nav v-if="bes.title" :aria-label="t('toc')" class="toc content" id="toc">
       <ol>
         <li v-for="(title,pno) in bes.title" :key="pno">
           <a :href="'#page'+(pno+1)">{{title}}</a>
@@ -34,7 +34,7 @@
             <p v-else>{{ tenji2yomi(line) }}</p>
           </template>
           <p class="is-size-6 has-text-right">
-            <a href="#docTop"><o-icon icon="arrow-up" size="small" aria-hidden="true" />もくじへ もどる</a>
+            <a href="#docTop"><o-icon icon="arrow-up" size="small" aria-hidden="true" />{{ t('backToToc') }}</a>
           </p>
         </div>
       </section>
@@ -48,6 +48,9 @@ import * as tenji from 'tenji'
 import { OIcon } from '@oruga-ui/oruga-next'
 import { splitbraille, type ParsedBraille } from '@/modules/brailleParser'
 import { unicode2brf } from '../modules/brf2unicode'
+import { useI18n } from '../modules/i18n'
+
+const { t } = useI18n()
 
 const props = withDefaults(defineProps<{
   braille?: string;

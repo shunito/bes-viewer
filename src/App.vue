@@ -1,24 +1,32 @@
 <template>
   <div id="app">
     <header>
-      <nav class="navbar is-dark" title="メインナビゲーション" id="main-header">
+      <nav class="navbar is-dark" :title="t('title')" id="main-header">
         <div class="navbar-brand">
-          <h1 class="navbar-item">BES Viewer α</h1>
+          <h1 class="navbar-item">{{ t('title') }}</h1>
         </div>
 
         <div id="navbarMenu" class="navbar-menu is-active">
           <div class="navbar-start">
             <div class="navbar-item">
-              <label for="file">ファイル</label>
+              <label for="file">{{ t('selectFile') }}</label>
               <input type="file" id="file" name="file" accept=".bes,.brf" @change="onFileChange" ref="fileInput" />
             </div>
             <div class="navbar-item">
-              <button class="button is-small is-light" id="closeFile" :disabled="isFileClosed" @click="onFileClose">ファイルを閉じる</button>
+              <button class="button is-small is-light" id="closeFile" :disabled="isFileClosed" @click="onFileClose">{{ t('closeFile') }}</button>
             </div>
             <div class="navbar-item">
               <o-switch v-model="isYomiChecked" size="small">
-                読み {{ isYomiChecked ? '表示' : '非表示' }}
+                {{ t('yomiLabel') }} {{ isYomiChecked ? t('show') : t('hide') }}
               </o-switch>
+            </div>
+            <div class="navbar-item">
+              <div class="select is-small">
+                <select v-model="locale" aria-label="Language">
+                  <option value="ja">日本語</option>
+                  <option value="en">English</option>
+                </select>
+              </div>
             </div>
           </div>
           <div class="navbar-end">
@@ -37,7 +45,7 @@
     <footer class="footer">
       <div class="content has-text-centered">
         <p>
-          <strong>BES Viewer α</strong> by <a href="https://twitter.com/shunito">Shunsuke Ito</a>.
+          <strong>{{ t('title') }}</strong> by <a href="https://twitter.com/shunito">Shunsuke Ito</a>.
           The <a href="https://github.com/shunito/bes-viewer">source code</a> is licensed <a href="http://opensource.org/licenses/mit-license.php">MIT</a>.
         </p>
       </div>
@@ -51,6 +59,9 @@ import { OSwitch } from '@oruga-ui/oruga-next'
 import Braille from './components/Braille.vue'
 import bes2unicode from './modules/bes2unicode'
 import brf2unicode from './modules/brf2unicode'
+import { useI18n } from './modules/i18n'
+
+const { t, locale } = useI18n()
 
 const isYomiChecked = ref(false)
 const openFile = ref(false)
