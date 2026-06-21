@@ -22,7 +22,7 @@
           <p v-else>{{line}}</p>
         </template>
         <p class="is-size-6 has-text-right">
-          <a href="#docTop" aria-labelledby="toc"><o-icon icon="arrow-up" size="small" aria-hidden="true" />⠾⠩⠐⠳⠯⠀⠾⠐⠞⠙</a>
+          <a href="#docTop" aria-labelledby="toc"><o-icon icon="arrow-up" size="small" aria-hidden="true" />{{ t('backToTocBraille') }}</a>
         </p>
         </div>
         <div v-if="checkYomi" class="column is-one-third yomi">

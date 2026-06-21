@@ -12,7 +12,8 @@ const messages = {
     hide: '非表示',
     placeholder: 'ファイルを選択してください',
     backToToc: 'もくじへ もどる',
-    toc: '目次'
+    toc: '目次',
+    backToTocBraille: '⠾⠩⠐⠳⠯⠀⠾⠐⠞⠙'
   },
   en: {
     title: 'Braille Viewer α',
@@ -23,7 +24,8 @@ const messages = {
     hide: 'Hide',
     placeholder: 'Please select a file',
     backToToc: 'Back to TOC',
-    toc: 'TOC'
+    toc: 'TOC',
+    backToTocBraille: '⠃⠁⠉⠅⠀⠞⠕⠀⠞⠕⠉'
   }
 }
 
