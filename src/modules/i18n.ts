@@ -4,7 +4,7 @@ export type Locale = 'ja' | 'en'
 
 const messages = {
   ja: {
-    title: 'BES Viewer α',
+    title: 'UniBraille Viewer α',
     selectFile: 'ファイル',
     closeFile: 'ファイルを閉じる',
     yomiLabel: '読み',
@@ -16,7 +16,7 @@ const messages = {
     backToTocBraille: '⠾⠩⠐⠳⠯⠀⠾⠐⠞⠙'
   },
   en: {
-    title: 'Braille Viewer α',
+    title: 'UniBraille Viewer α',
     selectFile: 'File',
     closeFile: 'Close File',
     yomiLabel: 'Plain Text',

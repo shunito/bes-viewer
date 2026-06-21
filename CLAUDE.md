@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 概要
 
-BES Viewer は、日本で使用される BES（点字電子書籍標準）ファイルをブラウザで閲覧するためのビューアです。バイナリの BES ファイルを Unicode 点字文字に変換し、ブラウザ上で読みやすい形式でレンダリングします。
+UniBraille Viewer は、日本で使用される BES（点字電子書籍標準）ファイルや、世界的に普及している BRF などの各種点字ファイル（BRL, BSE）をブラウザで閲覧するためのビューアです。バイナリの BES ファイルおよび各種テキスト点字ファイルを Unicode 点字文字に変換し、ブラウザ上で読みやすい形式でレンダリングします。
 
 ## コマンド
 
@@ -26,11 +26,13 @@ npm test -- --run    # テストを一度だけ実行して終了
 
 - **`src/modules/bes2unicode.ts`** — コアロジック。BES ファイルの `Uint8Array` を受け取り、1029 バイトのヘッダーをスキップした後、各バイトを 2 桁の16進数文字列として Unicode 点字文字または特殊トークン（`@LB@`、`@PB@`、`@HR@`）にマッピングして Unicode 文字列として返す。
 
+- **`src/modules/brf2unicode.ts`** — ASCII点字デコーダー。BRF/BRL/BSE で用いられる ASCII点字（NABCC）のテキストデータを Unicode点字文字に変換する `brf2unicode()`、および Unicode点字をアルファベット平文に逆変換する `unicode2brf()` を提供する。
+
 - **`src/modules/brailleParser.ts`** — 点字文字列のパースロジック。`splitbraille()` がトークン区切りの文字列をページ・行単位に解析し、見出しを検出して `{ docTitle, title[], body[][] }` 構造の `ParsedBraille` オブジェクトを返す。`isHeader()` が見出し判定を担当。
 
-- **`src/App.vue`** — ルートコンポーネント。`<input type="file">` またはクエリパラメータ `?url=` 経由のファイル取得を担当し、`bes2unicode()` を呼び出して得た Unicode 文字列を `braille` プロップとして `Braille` コンポーネントに渡す。
+- **`src/App.vue`** — ルートコンポーネント。`<input type="file">` またはクエリパラメータ `?url=` 経由のファイル取得を担当し、拡張子に応じて `bes2unicode()` または `brf2unicode()` を呼び出して得た Unicode 文字列を `braille` プロップとして `Braille` コンポーネントに渡す。
 
-- **`src/components/Braille.vue`** — 点字コンテンツのレンダリング担当。`brailleParser.ts` の `splitbraille()` を使ってデータを整形し、目次ナビゲーションとページ単位の `<section>` をレンダリングする。`tenji` パッケージの `tenji.fromTenji()` を使った読み仮名カラムのオプション表示にも対応。
+- **`src/components/Braille.vue`** — 点字コンテンツのレンダリング担当。`brailleParser.ts` の `splitbraille()` を使ってデータを整形し、目次ナビゲーションとページ単位の `<section>` をレンダリングする。`tenji` パッケージの `tenji.fromTenji()` を使った日本語読み仮名表示、または `unicode2brf()` を使ったアルファベット平文のオプション併記に対応。
 
 ## 点字文字列内の特殊トークン
 

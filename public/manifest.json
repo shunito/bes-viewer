@@ -1,6 +1,6 @@
 {
-  "name": "bes-viewer",
-  "short_name": "bes-viewer",
+  "name": "UniBraille Viewer",
+  "short_name": "UniBraille",
   "icons": [
     {
       "src": "/img/icons/android-chrome-192x192.png",
