@@ -76,18 +76,6 @@ function tenji2yomi(str: string | false): string {
   if (props.isBrf) {
     return decodeUEB(unicode2brf(line))
   }
-  // Japanese reading conversion for locale 'ja'
-  if (locale.value === 'ja') {
-    const jaMap: Record<string, string> = {
-      '⠁': 'あ',
-      '⠃': 'い',
-      '⠉': 'う',
-      '⠙': 'え',
-      '⠑': 'お',
-      // extend mapping as needed
-    }
-    return line.split('').map(ch => jaMap[ch] ?? ch).join('')
-  }
   return tenji.fromTenji(line)
 }
 </script>

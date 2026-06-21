@@ -64,8 +64,8 @@ describe('Braille.vue コンポーネントテスト', () => {
   })
 
   it('checkYomi有効時：点字に対応する「読み（平文）」カラムが表示されること (日本語＝ひらがな)', () => {
-    // ⠁⠃⠉⠙⠑ は 「あいうえお」 に相当
-    const testBraille = '⠁⠃⠉⠙⠑'
+    // ⠁⠃⠉⠋⠊ は 「あいうえお」 に相当
+    const testBraille = '⠁⠃⠉⠋⠊'
     const wrapper = mount(Braille, {
       props: {
         braille: testBraille,
