@@ -10,7 +10,7 @@
           <div class="navbar-start">
             <div class="navbar-item">
               <label for="file">{{ t('selectFile') }}</label>
-              <input type="file" id="file" name="file" accept=".bes,.brf" @change="onFileChange" ref="fileInput" />
+              <input type="file" id="file" name="file" accept=".bes,.brf,.brl,.bse" @change="onFileChange" ref="fileInput" />
             </div>
             <div class="navbar-item">
               <button class="button is-small is-light" id="closeFile" :disabled="isFileClosed" @click="onFileClose">{{ t('closeFile') }}</button>
@@ -79,7 +79,8 @@ const onFileChange = (event: Event) => {
   if (!files || !files.length) return
 
   const file = files[0]
-  const isBrfFile = file.name.toLowerCase().endsWith('.brf')
+  const ext = file.name.toLowerCase().split('.').pop()
+  const isBrfFile = ext === 'brf' || ext === 'brl' || ext === 'bse'
 
   const reader = new FileReader()
   reader.onloadend = (theFile) => {
