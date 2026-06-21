@@ -47,13 +47,16 @@ import { computed } from 'vue'
 import * as tenji from 'tenji'
 import { OIcon } from '@oruga-ui/oruga-next'
 import { splitbraille, type ParsedBraille } from '@/modules/brailleParser'
+import { unicode2brf } from '../modules/brf2unicode'
 
 const props = withDefaults(defineProps<{
   braille?: string;
   checkYomi?: boolean;
+  isBrf?: boolean;
 }>(), {
   braille: '',
-  checkYomi: false
+  checkYomi: false,
+  isBrf: false
 })
 
 const isFileClose = computed(() => props.braille.length === 0)
@@ -66,6 +69,9 @@ function tenji2yomi(str: string | false): string {
   if (line.slice(0, 4) === '@H2@') line = line.slice(4)
   if (line.slice(0, 4) === '@HR@') return '<hr />'
   if (line.length === 0) return '<br />'
+  if (props.isBrf) {
+    return unicode2brf(line)
+  }
   return tenji.fromTenji(line)
 }
 </script>
