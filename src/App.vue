@@ -16,12 +16,9 @@
               <button class="button is-small is-light" id="closeFile" :disabled="isFileClosed" @click="onFileClose">ファイルを閉じる</button>
             </div>
             <div class="navbar-item">
-              <label class="switch is-rounded is-small" for="yomi-switch">
-                <span class="control-label">読み</span>
-                <input id="yomi-switch" type="checkbox" role="switch" v-model="isYomiChecked">
-                <span class="check ml-2"></span>
-                <span class="ml-2">{{ isYomiChecked ? '表示' : '非表示' }}</span>
-              </label>
+              <o-switch v-model="isYomiChecked" size="small">
+                読み {{ isYomiChecked ? '表示' : '非表示' }}
+              </o-switch>
             </div>
           </div>
           <div class="navbar-end">
@@ -50,6 +47,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
+import { OSwitch } from '@oruga-ui/oruga-next'
 import Braille from './components/Braille.vue'
 import bes2unicode from './modules/bes2unicode'
 
@@ -104,5 +102,8 @@ onMounted(() => {
 })
 </script>
 
-<style lang="scss">
+<style>
+.footer a {
+  text-decoration: underline;
+}
 </style>

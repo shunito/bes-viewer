@@ -11,6 +11,8 @@
     "strictFunctionTypes": false,
     "forceConsistentCasingInFileNames": true,
     "sourceMap": true,
+    "noEmit": true,
+    "skipLibCheck": true,
     "paths": {
       "@/*": [
         "./src/*"

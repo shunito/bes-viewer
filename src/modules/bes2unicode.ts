@@ -1,6 +1,6 @@
 // BESファイルのUnicode変換試作
 
-const list:any = []
+const list: Record<string, string> = {}
 list['a0'] = '⠀'
 list['fe'] = '@LB@'
 list['0d'] = ''
