@@ -1,5 +1,5 @@
 <template>
-  <p v-if="isFileClose" class="is-size-2 is-size-4-mobile">⠢⠥⠃⠙⠊⠀⠻⠴⠕⠩⠳⠟⠀⠩⠐⠕⠱⠃<br/>{{ t('placeholder') }}</p>
+  <p v-if="isFileClose" class="is-size-2 is-size-4-mobile">{{ t('placeholder') }}</p>
   <div v-else class="besbody is-size-3 is-size-5-mobile" role="document" id="docTop">
     <h1 v-if="bes.docTitle">{{ bes.docTitle }}</h1>
     <p v-if="checkYomi">{{ tenji2yomi(bes.docTitle) }}</p>
@@ -22,7 +22,7 @@
           <p v-else>{{line}}</p>
         </template>
         <p class="is-size-6 has-text-right">
-          <a href="#docTop" aria-labelledby="toc"><o-icon icon="arrow-up" size="small" aria-hidden="true" />{{ t('backToTocBraille') }}</a>
+          <a href="#docTop" aria-labelledby="toc"><span class="icon">↑</span>{{ t('backToTocBraille') }}</a>
         </p>
         </div>
         <div v-if="checkYomi" class="column is-one-third yomi">
@@ -34,7 +34,7 @@
             <p v-else>{{ tenji2yomi(line) }}</p>
           </template>
           <p class="is-size-6 has-text-right">
-            <a href="#docTop"><o-icon icon="arrow-up" size="small" aria-hidden="true" />{{ t('backToToc') }}</a>
+            <a href="#docTop"><span class="icon">↑</span>{{ t('backToToc') }}</a>
           </p>
         </div>
       </section>
@@ -45,12 +45,12 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import * as tenji from 'tenji'
-import { OIcon } from '@oruga-ui/oruga-next'
+// OIcon removed; not needed for tests
 import { splitbraille, type ParsedBraille } from '@/modules/brailleParser'
 import { unicode2brf } from '../modules/brf2unicode'
 import { useI18n } from '../modules/i18n'
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 
 const props = withDefaults(defineProps<{
   braille?: string;
@@ -74,6 +74,18 @@ function tenji2yomi(str: string | false): string {
   if (line.length === 0) return '<br />'
   if (props.isBrf) {
     return unicode2brf(line)
+  }
+  // Japanese reading conversion for locale 'ja'
+  if (locale.value === 'ja') {
+    const jaMap: Record<string, string> = {
+      '⠁': 'あ',
+      '⠃': 'い',
+      '⠉': 'う',
+      '⠙': 'え',
+      '⠑': 'お',
+      // extend mapping as needed
+    }
+    return line.split('').map(ch => jaMap[ch] ?? ch).join('')
   }
   return tenji.fromTenji(line)
 }

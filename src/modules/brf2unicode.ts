@@ -18,6 +18,16 @@ const brailleMap: Record<string, string> = {
 export default function brf2unicode(text: string): string {
   const chars: string[] = []
   for (let i = 0; i < text.length; i++) {
+    // Detect control code blocks like @HR@, @LB@, etc., and preserve them as-is
+    if (text[i] === '@') {
+      const endIdx = text.indexOf('@', i + 1)
+      if (endIdx !== -1) {
+        const control = text.slice(i, endIdx + 1)
+        chars.push(control)
+        i = endIdx
+        continue
+      }
+    }
     const char = text[i]
     if (char === '\r') {
       continue
