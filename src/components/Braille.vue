@@ -45,6 +45,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import * as tenji from 'tenji'
+import { OIcon } from '@oruga-ui/oruga-next'
 import { splitbraille, type ParsedBraille } from '@/modules/brailleParser'
 
 const props = withDefaults(defineProps<{
