@@ -1,29 +1,48 @@
-# bes-viewer
+# BES Viewer
 
-## Build Setup
+BES Viewer は、日本国内で広く利用されている BES（点字電子書籍標準）ファイルをブラウザ上で直接閲覧するためのビューアアプリケーションです。
+バイナリ形式の BES ファイルを Unicode 点字文字に変換し、ブラウザで読みやすいレイアウトでレンダリングします。また、「読み（ルビ）」の表示/非表示の切り替え機能も搭載しています。
 
-``` bash
-# install dependencies
+## 主な機能
+- **BESファイルの読み込み**: `<input type="file">` 経由、またはクエリパラメータ `?url=...` による外部BESファイルの読み込み。
+- **点字レンダリング**: Unicode点字フォント（Apple Braille など）を用いた美しい点字レイアウト表示。
+- **読み仮名表示**: `tenji` ライブラリを使用した、点字から日本語（読み仮名）への変換および表示。
+- **目次ナビゲーション**: 見出しの自動抽出によるページおよび章へのジャンプ機能。
+- **PWA（Progressive Web App）対応**: オフライン環境でもビューアを起動して利用可能。
+
+## 主な技術スタック
+- **フレームワーク**: Vue 3 (Composition API / `<script setup>`)
+- **ビルドツール / バンドラー**: Vite 8 / Rolldown / esbuild
+- **プログラミング言語**: TypeScript 6
+- **UIライブラリ**: Oruga UI (Bulmaテーマ)
+- **テストフレームワーク**: Vitest
+- **Lint**: ESLint 10 (Flat Config)
+
+## セットアップとコマンド
+
+```bash
+# 依存パッケージのインストール
 npm install
 
-# serve with hot reload at localhost:8080
-npm run serve
+# 開発サーバーの起動（ホットリロード有効、デフォルト: localhost:5173）
+npm run dev
 
-# build for production with minification
+# 本番環境向けのビルド（出力先: dist/）
 npm run build
 
-# lint and fix files
+# 本番ビルドのローカルプレビュー
+npm run preview
+
+# コードの静的解析（Lintチェック）
 npm run lint
+
+# ユニットテストの実行（Vitest）
+npm test
 ```
 
-## Editor setup (Vue 2 + TypeScript)
+## 推奨エディタ設定 (VS Code)
 
-This project uses Vue 2 with `vue-class-component`/`vue-property-decorator`. The Vue 3 language tools (Volar / `vue-tsc`) can produce false-positive template diagnostics for this codebase.
+本プロジェクトは Vue 3 および TypeScript 6 で構成されています。快適な開発環境のために以下を推奨します。
 
-Recommended local editor configuration:
-
-- Install and enable the `Vetur` extension (`octref.vetur`).
-- Disable or uninstall the `Volar` extension (`johnsoncodehk.volar`) for this workspace to avoid Vue3-specific template typechecking.
-- Use the workspace VSCode settings in `.vscode/` (already provided) which recommend the appropriate extension and point the editor to the project's TypeScript.
-
-If you intentionally want strict Vue template typechecking, consider migrating components to the Composition API / Vue 3 and enabling `vue-tsc`.
+- **推奨拡張機能**: Vue 3 公式の **Volar** (Vue Language Features) を有効にしてください。
+- **以前の拡張機能の無効化**: 旧バージョンの Vue 2 向け拡張機能である `Vetur` は無効化またはアンインストールしてください。
